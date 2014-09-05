@@ -1,4 +1,4 @@
-#include "widget.h"
+ï»¿#include "widget.h"
 #include "ui_widget.h"
 
 Widget::Widget(QWidget *parent) :
@@ -27,11 +27,11 @@ Widget::Widget(QWidget *parent) :
 }
 
 void Widget::currentFormatChanged(const QTextCharFormat &format)
-{//µ±±à¼­Æ÷µÄ×ÖÌå¸ñÊ½¸Ä±äÊ±£¬ÎÒÃÇÈÃ²¿¼ş×´Ì¬Ò²ËæÖ®¸Ä±ä
+{//å½“ç¼–è¾‘å™¨çš„å­—ä½“æ ¼å¼æ”¹å˜æ—¶ï¼Œæˆ‘ä»¬è®©éƒ¨ä»¶çŠ¶æ€ä¹Ÿéšä¹‹æ”¹å˜
     ui->fontComboBox->setCurrentFont(format.font());
 
-    if(format.fontPointSize()<9)  //Èç¹û×ÖÌå´óĞ¡³ö´í£¬ÒòÎªÎÒÃÇ×îĞ¡µÄ×ÖÌåÎª9
-        ui->fontsizecomboBox->setCurrentIndex(3); //¼´ÏÔÊ¾12
+    if(format.fontPointSize()<9)  //å¦‚æœå­—ä½“å¤§å°å‡ºé”™ï¼Œå› ä¸ºæˆ‘ä»¬æœ€å°çš„å­—ä½“ä¸º9
+        ui->fontsizecomboBox->setCurrentIndex(3); //å³æ˜¾ç¤º12
     else ui->fontsizecomboBox->setCurrentIndex(
             ui->fontsizecomboBox->findText(QString::number(format.fontPointSize())));
 
@@ -41,7 +41,7 @@ void Widget::currentFormatChanged(const QTextCharFormat &format)
     color = format.foreground().color();
 }
 
-void Widget::processPendingDatagrams()   //½ÓÊÕÊı¾İUDP
+void Widget::processPendingDatagrams()   //æ¥æ”¶æ•°æ®UDP
 {
     while(udpSocket->hasPendingDatagrams())
     {
@@ -102,7 +102,7 @@ void Widget::processPendingDatagrams()   //½ÓÊÕÊı¾İUDP
     }
 }
 
-//´¦ÀíĞÂÓÃ»§¼ÓÈë
+//å¤„ç†æ–°ç”¨æˆ·åŠ å…¥
 void Widget::newParticipant(QString userName,QString localHostName,QString ipAddress)
 {
     bool bb = ui->tableWidget->findItems(localHostName,Qt::MatchExactly).isEmpty();
@@ -117,21 +117,21 @@ void Widget::newParticipant(QString userName,QString localHostName,QString ipAdd
         ui->tableWidget->setItem(0,2,ip);
         ui->textBrowser->setTextColor(Qt::gray);
         ui->textBrowser->setCurrentFont(QFont("Times New Roman",10));
-        ui->textBrowser->append(tr("%1 ÔÚÏß£¡").arg(userName));
-        ui->onlineUser->setText(tr("ÔÚÏßÈËÊı£º%1").arg(ui->tableWidget->rowCount()));
+        ui->textBrowser->append(tr("%1 åœ¨çº¿ï¼").arg(userName));
+        ui->onlineUser->setText(tr("åœ¨çº¿äººæ•°ï¼š%1").arg(ui->tableWidget->rowCount()));
         sendMessage(NewParticipant);
     }
 }
 
-//´¦ÀíÓÃ»§Àë¿ª
+//å¤„ç†ç”¨æˆ·ç¦»å¼€
 void Widget::participantLeft(QString userName,QString localHostName,QString time)
 {
     int rowNum = ui->tableWidget->findItems(localHostName,Qt::MatchExactly).first()->row();
     ui->tableWidget->removeRow(rowNum);
     ui->textBrowser->setTextColor(Qt::gray);
     ui->textBrowser->setCurrentFont(QFont("Times New Roman",10));
-    ui->textBrowser->append(tr("%1 ÓÚ %2 Àë¿ª£¡").arg(userName).arg(time));
-    ui->onlineUser->setText(tr("ÔÚÏßÈËÊı£º%1").arg(ui->tableWidget->rowCount()));
+    ui->textBrowser->append(tr("%1 äº %2 ç¦»å¼€ï¼").arg(userName).arg(time));
+    ui->onlineUser->setText(tr("åœ¨çº¿äººæ•°ï¼š%1").arg(ui->tableWidget->rowCount()));
 }
 
 Widget::~Widget()
@@ -151,18 +151,18 @@ void Widget::changeEvent(QEvent *e)
     }
 }
 
-QString Widget::getIP()  //»ñÈ¡ipµØÖ·
+QString Widget::getIP()  //è·å–ipåœ°å€
 {
     QList<QHostAddress> list = QNetworkInterface::allAddresses();
     foreach (QHostAddress address, list)
     {
-       if(address.protocol() == QAbstractSocket::IPv4Protocol) //ÎÒÃÇÊ¹ÓÃIPv4µØÖ·
+       if(address.protocol() == QAbstractSocket::IPv4Protocol) //æˆ‘ä»¬ä½¿ç”¨IPv4åœ°å€
             return address.toString();
     }
        return 0;
 }
 
-void Widget::sendMessage(MessageType type, QString serverAddress)  //·¢ËÍĞÅÏ¢
+void Widget::sendMessage(MessageType type, QString serverAddress)  //å‘é€ä¿¡æ¯
 {
     QByteArray data;
     QDataStream out(&data,QIODevice::WriteOnly);
@@ -187,7 +187,7 @@ void Widget::sendMessage(MessageType type, QString serverAddress)  //·¢ËÍĞÅÏ¢
             {
                 if(ui->textEdit->toPlainText() == "")
                 {
-                    QMessageBox::warning(0,tr("¾¯¸æ"),tr("·¢ËÍÄÚÈİ²»ÄÜÎª¿Õ"),QMessageBox::Ok);
+                    QMessageBox::warning(0,tr("è­¦å‘Š"),tr("å‘é€å†…å®¹ä¸èƒ½ä¸ºç©º"),QMessageBox::Ok);
                     return;
                 }
                out << address << getMessage();
@@ -212,7 +212,7 @@ void Widget::sendMessage(MessageType type, QString serverAddress)  //·¢ËÍĞÅÏ¢
 
 }
 
-QString Widget::getUserName()  //»ñÈ¡ÓÃ»§Ãû
+QString Widget::getUserName()  //è·å–ç”¨æˆ·å
 {
     QStringList envVariables;
     envVariables << "USERNAME.*" << "USER.*" << "USERDOMAIN.*"
@@ -232,10 +232,10 @@ QString Widget::getUserName()  //»ñÈ¡ÓÃ»§Ãû
             }
         }
     }
-    return false;
+    return " ";
 }
 
-QString Widget::getMessage()  //»ñµÃÒª·¢ËÍµÄĞÅÏ¢
+QString Widget::getMessage()  //è·å¾—è¦å‘é€çš„ä¿¡æ¯
 {
     QString msg = ui->textEdit->toHtml();
 
@@ -255,19 +255,19 @@ void Widget::sentFileName(QString fileName)
     sendMessage(FileName);
 }
 
-void Widget::hasPendingFile(QString userName,QString serverAddress,  //½ÓÊÕÎÄ¼ş
+void Widget::hasPendingFile(QString userName,QString serverAddress,  //æ¥æ”¶æ–‡ä»¶
                             QString clientAddress,QString fileName)
 {
     QString ipAddress = getIP();
     if(ipAddress == clientAddress)
     {
-        int btn = QMessageBox::information(this,tr("½ÓÊÜÎÄ¼ş"),
-                                 tr("À´×Ô%1(%2)µÄÎÄ¼ş£º%3,ÊÇ·ñ½ÓÊÕ£¿")
+        int btn = QMessageBox::information(this,tr("æ¥å—æ–‡ä»¶"),
+                                 tr("æ¥è‡ª%1(%2)çš„æ–‡ä»¶ï¼š%3,æ˜¯å¦æ¥æ”¶ï¼Ÿ")
                                  .arg(userName).arg(serverAddress).arg(fileName),
                                  QMessageBox::Yes,QMessageBox::No);
         if(btn == QMessageBox::Yes)
         {
-            QString name = QFileDialog::getSaveFileName(0,tr("±£´æÎÄ¼ş"),fileName);
+            QString name = QFileDialog::getSaveFileName(0,tr("ä¿å­˜æ–‡ä»¶"),fileName);
             if(!name.isEmpty())
             {
                 TcpClient *client = new TcpClient(this);
@@ -284,7 +284,7 @@ void Widget::hasPendingFile(QString userName,QString serverAddress,  //½ÓÊÕÎÄ¼ş
     }
 }
 
-void Widget::on_send_clicked()//·¢ËÍ
+void Widget::on_send_clicked()//å‘é€
 {
     sendMessage(Message);
 }
@@ -293,14 +293,14 @@ void Widget::on_sendfile_clicked()
 {
     if(ui->tableWidget->selectedItems().isEmpty())
     {
-        QMessageBox::warning(0,tr("Ñ¡ÔñÓÃ»§"),tr("ÇëÏÈ´ÓÓÃ»§ÁĞ±íÑ¡ÔñÒª´«ËÍµÄÓÃ»§£¡"),QMessageBox::Ok);
+        QMessageBox::warning(0,tr("é€‰æ‹©ç”¨æˆ·"),tr("è¯·å…ˆä»ç”¨æˆ·åˆ—è¡¨é€‰æ‹©è¦ä¼ é€çš„ç”¨æˆ·ï¼"),QMessageBox::Ok);
         return;
     }
     server->show();
     server->initServer();
 }
 
-void Widget::on_close_clicked()//¹Ø±Õ
+void Widget::on_close_clicked()//å…³é—­
 {
     this->close();
 }
@@ -322,7 +322,7 @@ bool Widget::eventFilter(QObject *target, QEvent *event)
     return QWidget::eventFilter(target,event);
 }
 
-void Widget::on_fontComboBox_currentFontChanged(QFont f)//×ÖÌåÉèÖÃ
+void Widget::on_fontComboBox_currentFontChanged(QFont f)//å­—ä½“è®¾ç½®
 {
     ui->textEdit->setCurrentFont(f);
     ui->textEdit->setFocus();
@@ -365,27 +365,27 @@ void Widget::on_textcolor_clicked()
     }
 }
 
-void Widget::on_save_clicked()//±£´æÁÄÌì¼ÇÂ¼
+void Widget::on_save_clicked()//ä¿å­˜èŠå¤©è®°å½•
 {
     if(ui->textBrowser->document()->isEmpty())
-        QMessageBox::warning(0,tr("¾¯¸æ"),tr("ÁÄÌì¼ÇÂ¼Îª¿Õ£¬ÎŞ·¨±£´æ£¡"),QMessageBox::Ok);
+        QMessageBox::warning(0,tr("è­¦å‘Š"),tr("èŠå¤©è®°å½•ä¸ºç©ºï¼Œæ— æ³•ä¿å­˜ï¼"),QMessageBox::Ok);
     else
     {
-       //»ñµÃÎÄ¼şÃû
-       QString fileName = QFileDialog::getSaveFileName(this,tr("±£´æÁÄÌì¼ÇÂ¼"),tr("ÁÄÌì¼ÇÂ¼"),tr("ÎÄ±¾(*.txt);;All File(*.*)"));
+       //è·å¾—æ–‡ä»¶å
+       QString fileName = QFileDialog::getSaveFileName(this,tr("ä¿å­˜èŠå¤©è®°å½•"),tr("èŠå¤©è®°å½•"),tr("æ–‡æœ¬(*.txt);;All File(*.*)"));
        if(!fileName.isEmpty())
            saveFile(fileName);
     }
 }
 
-bool Widget::saveFile(const QString &fileName)//±£´æÎÄ¼ş
+bool Widget::saveFile(const QString &fileName)//ä¿å­˜æ–‡ä»¶
 {
     QFile file(fileName);
     if(!file.open(QFile::WriteOnly | QFile::Text))
 
     {
-        QMessageBox::warning(this,tr("±£´æÎÄ¼ş"),
-        tr("ÎŞ·¨±£´æÎÄ¼ş %1:\n %2").arg(fileName)
+        QMessageBox::warning(this,tr("ä¿å­˜æ–‡ä»¶"),
+        tr("æ— æ³•ä¿å­˜æ–‡ä»¶ %1:\n %2").arg(fileName)
         .arg(file.errorString()));
         return false;
     }
@@ -395,7 +395,7 @@ bool Widget::saveFile(const QString &fileName)//±£´æÎÄ¼ş
     return true;
 }
 
-void Widget::on_clear_clicked()//Çå¿ÕÁÄÌì¼ÇÂ¼
+void Widget::on_clear_clicked()//æ¸…ç©ºèŠå¤©è®°å½•
 {
     ui->textBrowser->clear();
 }

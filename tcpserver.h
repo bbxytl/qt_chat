@@ -17,41 +17,41 @@ class TcpServer : public QDialog
 public:
     explicit TcpServer(QWidget *parent = 0);
     ~TcpServer();
-    void refused();
+    void refused(); //拒绝
 
-    void initServer();
+    void initServer();  //初始化服务器
 
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);    //变更事件
 
 private:
     Ui::TcpServer *ui;
-    qint16 tcpPort;
-    QTcpServer *tcpServer;
+    qint16 tcpPort; //tcp端口号
+    QTcpServer *tcpServer;  //Qt的tcp服务类
     QString fileName;
     QString theFileName;
     QFile *localFile;
 
-    qint64 TotalBytes;
-    qint64 bytesWritten;
-    qint64 bytesToWrite;
-    qint64 loadSize;
-    QByteArray outBlock;//����һ�η��͵�����
+    qint64 TotalBytes;  //请求内容的大小；总量
+    qint64 bytesWritten;    //已发送的字节数
+    qint64 bytesToWrite;    //准备发送的字节数
+    qint64 loadSize;    //载入容量
+    QByteArray outBlock;//缓存一次发送的数据
 
-    QTcpSocket *clientConnection;
+    QTcpSocket *clientConnection; //客户端连接的Socket
 
-    QTime time;//��ʱ��
+    QTime time;//计时器
 
 private slots:
-    void on_serverCloseBtn_clicked();
-    void on_serverSendBtn_clicked();
-    void on_serverOpenBtn_clicked();
-    void sendMessage();
+    void on_serverCloseBtn_clicked();   //服务断开按钮事件
+    void on_serverSendBtn_clicked();    //服务发送按钮事件
+    void on_serverOpenBtn_clicked();    //服务打开按钮事件
+    void sendMessage();     //发送消息
 
-   void updateClientProgress(qint64 numBytes);
+   void updateClientProgress(qint64 numBytes);  //更新服务器进程
 signals:
-    void sendFileName(QString fileName);
+    void sendFileName(QString fileName);    //发送文件名信号
 
 };
 

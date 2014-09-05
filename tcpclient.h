@@ -17,35 +17,34 @@ class TcpClient : public QDialog
 public:
     explicit TcpClient(QWidget *parent = 0);
     ~TcpClient();
-    void setHostAddress(QHostAddress address);
-    void setFileName(QString fileName){localFile = new QFile(fileName);}
+    void setHostAddress(QHostAddress address);  //设置主机地址
+    void setFileName(QString fileName){localFile = new QFile(fileName);}//设置文件名
 
 protected:
-    void changeEvent(QEvent *e);
+    void changeEvent(QEvent *e);    //变更事件
 
 private:
     Ui::TcpClient *ui;
-    QTcpSocket *tcpClient;
-    quint16 blockSize;
-    QHostAddress hostAddress;
-    qint16 tcpPort;
+    QTcpSocket *tcpClient;  //TCP客户端Socket
+    quint16 blockSize;  //块大小
+    QHostAddress hostAddress;   //主机地址
+    qint16 tcpPort; //tcp端口号
 
-    qint64 TotalBytes;
-    qint64 bytesReceived;
-    qint64 bytesToReceive;
-    qint64 fileNameSize;
-    QString fileName;
-    QFile *localFile;
-    QByteArray inBlock;
-
+    qint64 TotalBytes;      //请求内容的大小；总量
+    qint64 bytesReceived;   //已接收的总字节数
+    qint64 bytesToReceive;  //准备接收的总字节数
+    qint64 fileNameSize;    //文件名大小
+    QString fileName;       //文件名
+    QFile *localFile;       //本地文件
+    QByteArray inBlock;     //整块
     QTime time;
 
 private slots:
-    void on_tcpClientCancleBtn_clicked();
-    void on_tcpClientCloseBtn_clicked();
-    void newConnect();
-    void readMessage();
-    void displayError(QAbstractSocket::SocketError);
+    void on_tcpClientCancleBtn_clicked();   //tcp客户端取消按钮事件
+    void on_tcpClientCloseBtn_clicked();    //tcp客户端关闭按钮事件
+    void newConnect();  //新连接
+    void readMessage(); //读消息
+    void displayError(QAbstractSocket::SocketError);    //显示错误
 };
 
 #endif // TCPCLIENT_H
