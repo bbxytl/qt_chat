@@ -1,4 +1,4 @@
-#include "tcpclient.h"
+﻿#include "tcpclient.h"
 #include "ui_tcpclient.h"
 #include <QFileDialog>
 #include <QMessageBox>
@@ -56,8 +56,8 @@ void TcpClient::readMessage()
     QDataStream in(tcpClient);
     in.setVersion(QDataStream::Qt_4_6);
 
-    float useTime = time.elapsed();
-    if(bytesReceived <= sizeof(qint64)*2){
+    float useTime = time.elapsed(); //获取传输用时
+    if(bytesReceived <= sizeof(qint64)*2){  //判断已读取信息大小
         if((tcpClient->bytesAvailable() >= sizeof(qint64)*2) && (fileNameSize == 0)){
             in>>TotalBytes>>fileNameSize;
             bytesReceived += sizeof(qint64)*2;
@@ -80,8 +80,10 @@ void TcpClient::readMessage()
         localFile->write(inBlock);
         inBlock.resize(0);
     }
+    //设置进度条显示进度
     ui->progressBar->setMaximum(TotalBytes);
     ui->progressBar->setValue(bytesReceived);
+
     qDebug()<<bytesReceived<<"received"<<TotalBytes;
 
     double speed = bytesReceived / useTime;
@@ -100,7 +102,6 @@ void TcpClient::readMessage()
     }
 }
 
-
 void TcpClient::displayError(QAbstractSocket::SocketError socketError) //错误处理
 {
     switch(socketError)
@@ -109,9 +110,6 @@ void TcpClient::displayError(QAbstractSocket::SocketError socketError) //错误�
         default : qDebug() << tcpClient->errorString();
     }
 }
-
-
-
 
 void TcpClient::on_tcpClientCloseBtn_clicked()//关闭
 {

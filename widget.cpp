@@ -105,29 +105,35 @@ void Widget::processPendingDatagrams()   //接收数据UDP
 //处理新用户加入
 void Widget::newParticipant(QString userName,QString localHostName,QString ipAddress)
 {
+    //查看是否已有此用户
     bool bb = ui->tableWidget->findItems(localHostName,Qt::MatchExactly).isEmpty();
-    if(bb)
+    if(bb)//如果没有，则添加
     {
+        //向QTableWidget中插入项--这里是以列的形式插入的
         QTableWidgetItem *user = new QTableWidgetItem(userName);
         QTableWidgetItem *host = new QTableWidgetItem(localHostName);
         QTableWidgetItem *ip = new QTableWidgetItem(ipAddress);
-        ui->tableWidget->insertRow(0);
-        ui->tableWidget->setItem(0,0,user);
+        ui->tableWidget->insertRow(0);//插入一行
+        ui->tableWidget->setItem(0,0,user);//设置行中列的项内容
         ui->tableWidget->setItem(0,1,host);
         ui->tableWidget->setItem(0,2,ip);
+
+        //设置显示窗口--更新
         ui->textBrowser->setTextColor(Qt::gray);
         ui->textBrowser->setCurrentFont(QFont("Times New Roman",10));
         ui->textBrowser->append(tr("%1 在线！").arg(userName));
         ui->onlineUser->setText(tr("在线人数：%1").arg(ui->tableWidget->rowCount()));
-        sendMessage(NewParticipant);
+        sendMessage(NewParticipant);//发送新用户加入消息
     }
 }
 
 //处理用户离开
 void Widget::participantLeft(QString userName,QString localHostName,QString time)
 {
+    //获取当前用户所在行位置
     int rowNum = ui->tableWidget->findItems(localHostName,Qt::MatchExactly).first()->row();
-    ui->tableWidget->removeRow(rowNum);
+    ui->tableWidget->removeRow(rowNum); //移除行
+    //更新显示窗口
     ui->textBrowser->setTextColor(Qt::gray);
     ui->textBrowser->setCurrentFont(QFont("Times New Roman",10));
     ui->textBrowser->append(tr("%1 于 %2 离开！").arg(userName).arg(time));
@@ -143,8 +149,8 @@ void Widget::changeEvent(QEvent *e)
 {
     QWidget::changeEvent(e);
     switch (e->type()) {
-    case QEvent::LanguageChange:
-        ui->retranslateUi(this);
+    case QEvent::LanguageChange:    //如果语言更改
+        ui->retranslateUi(this);    //重新载入语言
         break;
     default:
         break;
@@ -153,11 +159,11 @@ void Widget::changeEvent(QEvent *e)
 
 QString Widget::getIP()  //获取ip地址
 {
-    QList<QHostAddress> list = QNetworkInterface::allAddresses();
+    QList<QHostAddress> list = QNetworkInterface::allAddresses();//返回主机上发现的所有IP地址。
     foreach (QHostAddress address, list)
     {
        if(address.protocol() == QAbstractSocket::IPv4Protocol) //我们使用IPv4地址
-            return address.toString();
+            return address.toString();  //以字符串返回IPv4地址
     }
        return 0;
 }
@@ -191,6 +197,7 @@ void Widget::sendMessage(MessageType type, QString serverAddress)  //发送信�
                     return;
                 }
                out << address << getMessage();
+               //设置滚动条滚到最下面
                ui->textBrowser->verticalScrollBar()->setValue(ui->textBrowser->verticalScrollBar()->maximum());
                break;
 
@@ -208,6 +215,7 @@ void Widget::sendMessage(MessageType type, QString serverAddress)  //发送信�
                 break;
             }
     }
+    //udp传输数据
     udpSocket->writeDatagram(data,data.length(),QHostAddress::Broadcast, port);
 
 }
@@ -217,17 +225,17 @@ QString Widget::getUserName()  //获取用户名
     QStringList envVariables;
     envVariables << "USERNAME.*" << "USER.*" << "USERDOMAIN.*"
                  << "HOSTNAME.*" << "DOMAINNAME.*";
+    //这里获取登陆用户的系统信息--使用的是电脑系统信息
     QStringList environment = QProcess::systemEnvironment();
     foreach (QString string, envVariables)
     {
-        int index = environment.indexOf(QRegExp(string));
+        int index = environment.indexOf(QRegExp(string));//使用正则表达式进行匹配环境信息（以上各种信息中的一个）
         if (index != -1)
         {
-
-            QStringList stringList = environment.at(index).split('=');
-            if (stringList.size() == 2)
+            QStringList stringList = environment.at(index).split('=');//将匹配的内容分割成两部分（一部分为名称，一部分为名称对应的值）
+            if (stringList.size() == 2)//确定分割后只含有名称和名称对应的值
             {
-                return stringList.at(1);
+                return stringList.at(1);//首先匹配的是USERNAME.*，也只返回这个对应的用户名
                 break;
             }
         }
@@ -237,7 +245,7 @@ QString Widget::getUserName()  //获取用户名
 
 QString Widget::getMessage()  //获得要发送的信息
 {
-    QString msg = ui->textEdit->toHtml();
+    QString msg = ui->textEdit->toHtml();//将文本转换为html富文本进行传输
 
     ui->textEdit->clear();
     ui->textEdit->setFocus();
@@ -246,7 +254,7 @@ QString Widget::getMessage()  //获得要发送的信息
 
 void Widget::closeEvent(QCloseEvent *)
 {
-    sendMessage(ParticipantLeft);
+    sendMessage(ParticipantLeft);//向其他未离开用户->发送用户离开消息
 }
 
 void Widget::sentFileName(QString fileName)
@@ -270,16 +278,16 @@ void Widget::hasPendingFile(QString userName,QString serverAddress,  //接收文
             QString name = QFileDialog::getSaveFileName(0,tr("保存文件"),fileName);
             if(!name.isEmpty())
             {
+                //建立Tcp连接传输文件
                 TcpClient *client = new TcpClient(this);
                 client->setFileName(name);
                 client->setHostAddress(QHostAddress(serverAddress));
                 client->show();
-
             }
 
         }
         else{
-            sendMessage(Refuse,serverAddress);
+            sendMessage(Refuse,serverAddress);//拒绝接收
         }
     }
 }
@@ -305,6 +313,7 @@ void Widget::on_close_clicked()//关闭
     this->close();
 }
 
+//事件过滤---在消息编辑框内检测Enter按钮事件
 bool Widget::eventFilter(QObject *target, QEvent *event)
 {
     if(target == ui->textEdit)
@@ -319,7 +328,7 @@ bool Widget::eventFilter(QObject *target, QEvent *event)
              }
         }
     }
-    return QWidget::eventFilter(target,event);
+    return QWidget::eventFilter(target,event);//一直进行检测！
 }
 
 void Widget::on_fontComboBox_currentFontChanged(QFont f)//字体设置
@@ -328,13 +337,13 @@ void Widget::on_fontComboBox_currentFontChanged(QFont f)//字体设置
     ui->textEdit->setFocus();
 }
 
-void Widget::on_fontsizecomboBox_currentIndexChanged(QString size)
+void Widget::on_fontsizecomboBox_currentIndexChanged(QString size)//字体大小设置
 {
    ui->textEdit->setFontPointSize(size.toDouble());
    ui->textEdit->setFocus();
 }
 
-void Widget::on_textbold_clicked(bool checked)
+void Widget::on_textbold_clicked(bool checked)//字体粗细设置
 {
     if(checked)
         ui->textEdit->setFontWeight(QFont::Bold);
@@ -343,19 +352,19 @@ void Widget::on_textbold_clicked(bool checked)
     ui->textEdit->setFocus();
 }
 
-void Widget::on_textitalic_clicked(bool checked)
+void Widget::on_textitalic_clicked(bool checked)//字体斜体设置
 {
     ui->textEdit->setFontItalic(checked);
     ui->textEdit->setFocus();
 }
 
-void Widget::on_textUnderline_clicked(bool checked)
+void Widget::on_textUnderline_clicked(bool checked)//字体下划线设置
 {
     ui->textEdit->setFontUnderline(checked);
     ui->textEdit->setFocus();
 }
 
-void Widget::on_textcolor_clicked()
+void Widget::on_textcolor_clicked()//字体颜色设置
 {
     color = QColorDialog::getColor(color,this);
     if(color.isValid())

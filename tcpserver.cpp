@@ -1,4 +1,4 @@
-#include "tcpserver.h"
+﻿#include "tcpserver.h"
 #include "ui_tcpserver.h"
 #include <QTcpSocket>
 #include <QFileDialog>
@@ -39,6 +39,7 @@ void TcpServer::changeEvent(QEvent *e)
 void TcpServer::sendMessage()  //开始发送数据
 {
     ui->serverSendBtn->setEnabled(false);
+
     clientConnection = tcpServer->nextPendingConnection();
     connect(clientConnection,SIGNAL(bytesWritten(qint64)),SLOT(updateClientProgress(qint64)));
 
@@ -58,10 +59,9 @@ void TcpServer::sendMessage()  //开始发送数据
     TotalBytes += outBlock.size();
     sendOut.device()->seek(0);
     sendOut<<TotalBytes<<qint64((outBlock.size()-sizeof(qint64)*2));
-    bytesToWrite = TotalBytes - clientConnection->write(outBlock);
+    bytesToWrite = TotalBytes - clientConnection->write(outBlock);//计算未写入大小
     qDebug()<<currentFile<<TotalBytes;
     outBlock.resize(0);
-
 }
 
 void TcpServer::updateClientProgress(qint64 numBytes)//更新进度条

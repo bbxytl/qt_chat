@@ -1,4 +1,4 @@
-#ifndef TCPSERVER_H
+﻿#ifndef TCPSERVER_H
 #define TCPSERVER_H
 
 #include <QDialog>
@@ -35,7 +35,7 @@ private:
 
     qint64 TotalBytes;  //请求内容的大小；总量
     qint64 bytesWritten;    //已发送的字节数
-    qint64 bytesToWrite;    //准备发送的字节数
+    qint64 bytesToWrite;    //未发送的字节数
     qint64 loadSize;    //载入容量
     QByteArray outBlock;//缓存一次发送的数据
 

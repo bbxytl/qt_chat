@@ -1,4 +1,4 @@
-#ifndef WIDGET_H
+﻿#ifndef WIDGET_H
 #define WIDGET_H
 
 #include <QWidget>
@@ -33,7 +33,7 @@ protected:
     void participantLeft(QString userName,QString localHostName,QString time);  //用户离开
     void closeEvent(QCloseEvent *);
     void hasPendingFile(QString userName,QString serverAddress,
-                        QString clientAddress,QString fileName);    //
+                        QString clientAddress,QString fileName);    //接收文件
 
      bool eventFilter(QObject *target, QEvent *event);//事件过滤器
 private:
@@ -41,7 +41,7 @@ private:
     QUdpSocket *udpSocket;
     qint16 port;
     QString fileName;
-    TcpServer *server;
+    TcpServer *server;  //tcp服务器连接对象
 
     QString getIP();
 

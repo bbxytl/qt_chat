@@ -1,4 +1,4 @@
-#ifndef TCPCLIENT_H
+﻿#ifndef TCPCLIENT_H
 #define TCPCLIENT_H
 
 #include <QDialog>
@@ -32,7 +32,7 @@ private:
 
     qint64 TotalBytes;      //请求内容的大小；总量
     qint64 bytesReceived;   //已接收的总字节数
-    qint64 bytesToReceive;  //准备接收的总字节数
+    qint64 bytesToReceive;  //未接收的总字节数
     qint64 fileNameSize;    //文件名大小
     QString fileName;       //文件名
     QFile *localFile;       //本地文件
